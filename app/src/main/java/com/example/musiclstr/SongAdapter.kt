@@ -1,84 +1,36 @@
 package com.example.musiclstr
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 
-class SongsAdapter(
-    private var songs: List<Song>,
+class SongAdapter(private val songList: List<Song>) : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
 
-    private val onItemClick: (Song) -> Unit
-) : RecyclerView.Adapter<SongsAdapter.SongViewHolder>() {
-
-    // Method to provide access to the songs list
-    fun getSongs(): List<Song> {
-        return songs
+    class SongViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val albumImageView: ImageView = view.findViewById(R.id.albumImageView)
+        val titleTextView: TextView = view.findViewById(R.id.titleTextView)
+        val artistTextView: TextView = view.findViewById(R.id.artistTextView)
     }
-
-    fun shuffleSongs() {
-        songs = songs.shuffled()
-        notifyDataSetChanged()
-    }
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.song_item, parent, false)
+        // Inflate your song item layout here
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item, parent, false)
         return SongViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        val song = songs[position]
-        holder.bind(song)
-        holder.itemView.setOnClickListener { onItemClick(song) }
+        val song = songList[position]
+        holder.titleTextView.text = song.title
+        holder.artistTextView.text = song.artist
 
-        // Highlight the currently playing song
-        if (song.isPlaying) {
-            // Apply highlight styling to the currently playing song
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.shuffleOnColor))
-        } else {
-            // Reset background color for other songs
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT)
-        }
+        // Optional: Load album image if available, using a library like Glide or Picasso
+        // Glide.with(holder.albumImageView.context).load(song.albumImageUrl).into(holder.albumImageView)
     }
 
-    override fun getItemCount(): Int = songs.size
-
-    fun submitList(newList: List<Song>) {
-        songs = newList
-        notifyDataSetChanged()
-    }
-
-
-
-
-    class SongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
-        private val artistTextView: TextView = itemView.findViewById(R.id.artistTextView)
-        private val albumImageView: ImageView = itemView.findViewById(R.id.albumImageView)
-
-
-        fun bind(song: Song) {
-            titleTextView.text = song.title
-            artistTextView.text = song.artist
-            titleTextView.setTextColor(Color.BLACK)
-            artistTextView.setTextColor(Color.BLACK)
-            Glide.with(itemView.context)
-                .load(song.albumArtUri)
-                .placeholder(R.drawable.audioicon) // Placeholder image
-                .error(R.drawable.audioicon) // Error image
-                .into(albumImageView)
-        }
-
-
+    override fun getItemCount(): Int {
+        return songList.size
     }
 }
-
-

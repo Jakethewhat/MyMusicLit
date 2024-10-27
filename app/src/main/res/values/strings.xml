@@ -26,6 +26,8 @@
     <string name="previous_button">previous_button</string>
     <string name="repeat_button">repeat_button</string>
     <string name="logo_description">logo_description</string>
+    <string
+    <string name="playlist_button_description">playlist\n</string>
 
 
 </resources>
